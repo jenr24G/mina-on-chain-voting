@@ -6,8 +6,11 @@ use tokio::signal;
 use tower::ServiceBuilder;
 use tower_http::trace::TraceLayer;
 
-use crate::config::{Context, Config};
-use crate::database::{cache::CacheManager, DBConnectionManager};
+use crate::config::Config;
+use crate::config::Context;
+use crate::database::cache::CacheManager;
+use crate::database::postgres::PostgresConnectionManager;
+use crate::database::DBConnectionManager;
 use crate::prelude::*;
 use crate::routes::Build;
 
@@ -36,7 +39,8 @@ async fn main() -> Result<()> {
         "Initializing database connection pools..."
     );
 
-    let conn_manager = DBConnectionManager::get_connections(&config);
+    let conn_manager: Box<dyn DBConnectionManager> =
+        Box::new(PostgresConnectionManager::get_connections(&config));
 
     let router = axum::Router::build().layer(
         ServiceBuilder::new()

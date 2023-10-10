@@ -18,7 +18,7 @@ pub(crate) enum ProposalCategory {
     Core,
     Networking,
     Interface,
-    ERC,
+    Erc,
     Cryptography,
 }
 
